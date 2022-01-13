@@ -1,3 +1,75 @@
 R5T.S0028 - Survey all local project files, then add to a file-based project repository.
 
-GOALS:
+## GOALS:
+
+
+## PLAN
+
+Operations:
+
+* SurveyCurrentProjects: Survey all current (local file system) project file paths.
+	Inputs: Non
+	Outputs: Projects[]
+* PerformAnalysis: Perform new/departed projects analysis.
+	Inputs: AnalysisInputData
+	Outputs: AnalysisOutputData
+* DetermineHumanActionsRequired: Determine if human actions are required
+	Inputs: AnalysisOutputData
+	Outputs: HumanActionsRequired
+* PromptForHumanActions: Prompt for human actions
+	Inputs: AnalysisInputData, AnalysisOutputData
+	Outputs: None
+* PerformHumanActions: Perform human actions. Does not complete until all mandatory human operations are complete. Performs the analysis, determines human actions, and prompts for human actions in a loop.
+	Inputs: AnalysisInputData
+	Outputs: AnalysisOutputData
+* SkipHumanActionsOrStopIfAnyMandatory
+	Inputs: AnalysisInputData
+	Outputs: AnalysisOutputData
+* UpdateRepository
+	Inputs: AnalysisOutputData
+	Outputs: None
+	
+* BackupRepositoryData: backup repository data.
+
+* O100_RunPromptingForHumanActions: An operation running the set of operations including prompting for human actions.
+* O101_RunSkippingHumanActions: An operation running the set of operations including skipping human actions or stopping if any are mandatory.
+
+* O000_MainOperation: An entry-point operation that runs the operation running the set of operations including prompting for human action (the default S0028 operation).
+
+Analysis Processes:
+
+* New/Departed projects.
+	* AnalysisInputData
+		* RepositoryProjects
+		* Projects
+	* AnalysisOutputData
+		* NewProjects
+		* DepartedProjects
+
+Human Actions Required:
+
+* Evaluate new projects.
+* Evaluate departed projects.
+
+* Mandatory: None
+
+Projects:
+
+* R5T.S0028
+* R5T.S0028.Library
+* R5T.X#### - IOperation extensions here.
+* R5T.O#### - Operations eventually moved here.
+* R5T.D####.D001.Base
+	* IProjectRepository
+* R5T.D####.D002.Base
+	* FileBasedProjectRepository
+* R5T.D####.D002.Base
+	* IProjectRepositoryFilePathsProvider
+	* IProjectRepositoryFileNamesProvider
+	* IBackupProjectRepositoryFilePathsProvider
+* R5T.D####.D002.I001
+	* ProjectRepositoryFileNamesProvider
+* R5T.D####.D002.I002
+	* LocalDataProjectRepositoryFilePathsProvider
+* R5T.D####.D002.I003
+	* OutputFileProjectRepositoryFilePathsProvider
